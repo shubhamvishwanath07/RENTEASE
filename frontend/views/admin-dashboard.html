@@ -1,0 +1,166 @@
+<!-- Admin Header -->
+<div class="dashboard-header">
+  <div class="container">
+    <h2><i class="fas fa-shield-alt me-2"></i>Admin Panel</h2>
+    <p style="opacity:0.75; margin:0;">Manage users, listings, and platform settings</p>
+  </div>
+</div>
+
+<div class="container dashboard-page">
+  <!-- Stats -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="stat-card coral">
+        <div class="stat-icon"><i class="fas fa-users"></i></div>
+        <div><div class="stat-value">{{stats.users}}</div><div class="stat-label">Total Users</div></div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-card green">
+        <div class="stat-icon"><i class="fas fa-building"></i></div>
+        <div><div class="stat-value">{{stats.properties}}</div><div class="stat-label">Live Properties</div></div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-card blue">
+        <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+        <div><div class="stat-value">{{stats.bookings}}</div><div class="stat-label">Bookings</div></div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-card gold">
+        <div class="stat-icon"><i class="fas fa-clock"></i></div>
+        <div><div class="stat-value">{{stats.pendingProperties}}</div><div class="stat-label">Pending Approval</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <ul class="nav nav-tabs mb-4" style="border-bottom:2px solid #e9ecef;">
+    <li class="nav-item">
+      <a class="nav-link" ng-class="{active: activeTab==='overview'}" ng-click="setTab('overview')" href="#" style="font-weight:600; color:#1a2e4a;">
+        <i class="fas fa-chart-bar me-2"></i>Overview
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" ng-class="{active: activeTab==='properties'}" ng-click="setTab('properties')" href="#" style="font-weight:600; color:#1a2e4a;">
+        <i class="fas fa-building me-2"></i>Properties
+        <span class="badge bg-warning text-dark ms-1" ng-if="stats.pendingProperties > 0">{{stats.pendingProperties}}</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" ng-class="{active: activeTab==='users'}" ng-click="setTab('users')" href="#" style="font-weight:600; color:#1a2e4a;">
+        <i class="fas fa-users me-2"></i>Users
+      </a>
+    </li>
+  </ul>
+
+  <!-- OVERVIEW TAB -->
+  <div ng-if="activeTab==='overview'">
+    <div class="row g-4">
+      <div class="col-md-6">
+        <div class="detail-card">
+          <h4><i class="fas fa-info-circle me-2" style="color:#FF6B35;"></i>Platform Summary</h4>
+          <table class="table table-borderless mb-0" style="font-size:0.9rem;">
+            <tr><td style="color:#6c757d;">Total Registered Users</td><td style="font-weight:600;">{{stats.users}}</td></tr>
+            <tr><td style="color:#6c757d;">Approved Properties</td><td style="font-weight:600;">{{stats.properties}}</td></tr>
+            <tr><td style="color:#6c757d;">Total Booking Inquiries</td><td style="font-weight:600;">{{stats.bookings}}</td></tr>
+            <tr><td style="color:#6c757d;">Listings Pending Review</td><td style="font-weight:600; color:#f57c00;">{{stats.pendingProperties}}</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="detail-card" style="border-top:4px solid #FF6B35;">
+          <h4><i class="fas fa-tasks me-2" style="color:#FF6B35;"></i>Quick Actions</h4>
+          <div class="d-grid gap-2">
+            <button class="btn-filter" ng-click="setTab('properties')" style="text-align:left; padding:0.75rem 1rem;">
+              <i class="fas fa-check-circle me-2"></i> Review Pending Listings ({{stats.pendingProperties}})
+            </button>
+            <button class="btn-clear-filter" ng-click="setTab('users')" style="text-align:left; padding:0.75rem 1rem;">
+              <i class="fas fa-users me-2"></i> Manage Users ({{stats.users}})
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROPERTIES TAB -->
+  <div ng-if="activeTab==='properties'">
+    <div class="data-table">
+      <table class="table table-hover">
+        <thead>
+          <tr><th>Property</th><th>Owner</th><th>City</th><th>Rent</th><th>BHK</th><th>Status</th><th>Featured</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="p in properties" ng-class="{'table-warning': !p.isApproved}">
+            <td>
+              <div style="font-weight:600; font-size:0.88rem; color:#1a2e4a; max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{p.title}}</div>
+            </td>
+            <td style="font-size:0.85rem;">{{p.owner ? p.owner.name : 'N/A'}}</td>
+            <td style="font-size:0.85rem; color:#6c757d;">{{p.city}}</td>
+            <td style="font-weight:600; color:#FF6B35;">₹{{p.rent | number}}</td>
+            <td><span class="chip">{{p.bhkType}}</span></td>
+            <td>
+              <span class="status-badge" ng-class="p.isApproved ? 'status-approved' : 'status-pending'">
+                {{p.isApproved ? 'Live' : 'Pending'}}
+              </span>
+            </td>
+            <td>
+              <span ng-if="p.isFeatured" style="color:#f39c12; font-size:0.85rem;"><i class="fas fa-star"></i> Yes</span>
+              <span ng-if="!p.isFeatured" style="color:#ccc; font-size:0.85rem;">No</span>
+            </td>
+            <td>
+              <button class="btn btn-sm me-1" ng-class="p.isApproved ? 'btn-outline-warning' : 'btn-success'" ng-click="approveProperty(p, !p.isApproved)" style="border-radius:6px; font-size:0.75rem;">
+                {{p.isApproved ? 'Unpublish' : 'Approve'}}
+              </button>
+              <button class="btn btn-sm btn-outline-secondary me-1" ng-click="toggleFeatured(p)" style="border-radius:6px; font-size:0.75rem;">
+                <i class="fas fa-star"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-danger" ng-click="deleteProperty(p._id)" style="border-radius:6px; font-size:0.75rem;">
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- USERS TAB -->
+  <div ng-if="activeTab==='users'">
+    <div class="data-table">
+      <table class="table table-hover">
+        <thead>
+          <tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Joined</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="u in users">
+            <td style="color:#6c757d; font-size:0.85rem;">{{$index + 1}}</td>
+            <td>
+              <div style="display:flex; align-items:center; gap:10px;">
+                <div style="width:34px; height:34px; border-radius:50%; background:#FF6B35; display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:0.85rem; flex-shrink:0;">
+                  {{u.name[0]}}
+                </div>
+                <span style="font-weight:600; font-size:0.88rem; color:#1a2e4a;">{{u.name}}</span>
+              </div>
+            </td>
+            <td style="font-size:0.85rem; color:#6c757d;">{{u.email}}</td>
+            <td style="font-size:0.85rem;">{{u.phone || '—'}}</td>
+            <td>
+              <span class="status-badge"
+                ng-class="u.role==='admin' ? 'status-confirmed' : u.role==='owner' ? 'status-pending' : 'status-cancelled'"
+                style="text-transform:capitalize;">{{u.role}}</span>
+            </td>
+            <td style="font-size:0.82rem; color:#6c757d;">{{u.createdAt | date:'mediumDate'}}</td>
+            <td>
+              <button class="btn btn-sm btn-outline-danger" ng-click="deleteUser(u._id)" ng-disabled="u.role==='admin'" style="border-radius:6px;">
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

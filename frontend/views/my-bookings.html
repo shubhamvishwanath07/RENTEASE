@@ -1,0 +1,65 @@
+<div style="padding:2rem 0 4rem;">
+  <div class="container">
+    <div class="mb-4">
+      <h3 style="font-family:'Poppins',sans-serif; font-weight:700; color:#1a2e4a;">
+        <i class="fas fa-calendar-check me-2" style="color:#FF6B35;"></i>My Bookings
+      </h3>
+      <p style="color:#6c757d;">Track your rental inquiries and visit requests</p>
+    </div>
+
+    <div class="loading-spinner" ng-if="loading"><div class="spinner-border"></div></div>
+
+    <div class="empty-state" ng-if="!loading && bookings.length === 0">
+      <i class="fas fa-calendar-times"></i>
+      <h5>No Bookings Yet</h5>
+      <p>You haven't sent any rental inquiries yet.</p>
+      <a href="#!/properties" class="btn-view mt-2" style="padding:10px 24px;">Browse Properties</a>
+    </div>
+
+    <div class="row g-4" ng-if="!loading && bookings.length > 0">
+      <div class="col-md-6" ng-repeat="b in bookings">
+        <div style="background:white; border-radius:16px; box-shadow:0 4px 20px rgba(0,0,0,0.08); overflow:hidden; border-top:4px solid var(--coral, #FF6B35);">
+          <div style="display:flex; gap:1rem; padding:1.25rem;">
+            <img ng-src="{{b.property.images && b.property.images.length ? b.property.images[0] : 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400'}}"
+              style="width:90px; height:80px; object-fit:cover; border-radius:10px; flex-shrink:0;" alt="property">
+            <div style="flex:1; min-width:0;">
+              <div style="font-weight:700; font-size:0.95rem; color:#1a2e4a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                {{b.property.title}}
+              </div>
+              <div style="font-size:0.82rem; color:#6c757d; margin:2px 0;">
+                <i class="fas fa-map-marker-alt me-1" style="color:#FF6B35;"></i>{{b.property.location}}
+              </div>
+              <div style="font-weight:700; color:#FF6B35; font-size:1rem;">₹{{b.property.rent | number}}/mo</div>
+            </div>
+          </div>
+          <div style="padding:0 1.25rem 1.25rem;">
+            <div style="background:#f8f9fc; border-radius:8px; padding:0.75rem; margin-bottom:1rem; font-size:0.85rem;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                <span style="color:#6c757d;">Visit Date</span>
+                <span style="font-weight:600;">{{b.visitDate | date:'mediumDate'}}</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                <span style="color:#6c757d;">Booked On</span>
+                <span style="font-weight:600;">{{b.createdAt | date:'mediumDate'}}</span>
+              </div>
+              <div style="display:flex; justify-content:space-between;">
+                <span style="color:#6c757d;">Phone</span>
+                <span style="font-weight:600;">{{b.phone}}</span>
+              </div>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="status-badge status-{{b.status}}">{{b.status | uppercase}}</span>
+              <div style="display:flex; gap:8px;">
+                <a href="#!/property/{{b.property._id}}" class="btn-view" style="font-size:0.8rem; padding:6px 14px;">View</a>
+                <button class="btn btn-sm btn-outline-danger" ng-if="b.status==='pending'" ng-click="cancel(b._id)" style="border-radius:8px; font-size:0.8rem;">Cancel</button>
+              </div>
+            </div>
+            <div ng-if="b.ownerResponse" style="margin-top:0.75rem; background:#e8f5e9; border-radius:8px; padding:0.6rem 0.8rem; font-size:0.83rem;">
+              <strong style="color:#2e7d32;"><i class="fas fa-comment me-1"></i>Owner:</strong> {{b.ownerResponse}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

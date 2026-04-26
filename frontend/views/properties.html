@@ -1,0 +1,103 @@
+<div style="padding: 2rem 0 4rem;">
+  <div class="container">
+    <!-- Page Header -->
+    <div class="mb-4">
+      <h3 style="font-family:'Poppins',sans-serif; font-weight:700; color:#1a2e4a;">
+        <i class="fas fa-building me-2" style="color:#FF6B35;"></i>Browse Properties
+      </h3>
+      <p style="color:#6c757d;">{{properties.length}} properties found</p>
+    </div>
+
+    <div class="row g-4">
+      <!-- FILTER SIDEBAR -->
+      <div class="col-lg-3">
+        <div class="filter-sidebar">
+          <h5><i class="fas fa-filter me-2"></i>Filter Properties</h5>
+
+          <div class="filter-group">
+            <label>Search Keyword</label>
+            <input class="form-control" ng-model="filters.search" placeholder="Title, area, city...">
+          </div>
+
+          <div class="filter-group">
+            <label>City</label>
+            <select class="form-select" ng-model="filters.city">
+              <option value="">All Cities</option>
+              <option>Mumbai</option><option>Bangalore</option><option>Gurgaon</option>
+              <option>Ahmedabad</option><option>Delhi</option><option>Pune</option><option>Hyderabad</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label>BHK Type</label>
+            <select class="form-select" ng-model="filters.bhkType">
+              <option value="">Any</option>
+              <option>Studio</option><option>1BHK</option><option>2BHK</option><option>3BHK</option><option>4BHK</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label>Furnishing</label>
+            <select class="form-select" ng-model="filters.furnished">
+              <option value="">Any</option>
+              <option>Furnished</option><option>Semi-Furnished</option><option>Unfurnished</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label>Min Rent (₹)</label>
+            <input class="form-control" type="number" ng-model="filters.minRent" placeholder="e.g. 10000">
+          </div>
+
+          <div class="filter-group">
+            <label>Max Rent (₹)</label>
+            <input class="form-control" type="number" ng-model="filters.maxRent" placeholder="e.g. 50000">
+          </div>
+
+          <button class="btn-filter" ng-click="applyFilters()"><i class="fas fa-search me-2"></i>Apply Filters</button>
+          <button class="btn-clear-filter" ng-click="clearFilters()"><i class="fas fa-times me-2"></i>Clear All</button>
+        </div>
+      </div>
+
+      <!-- PROPERTY GRID -->
+      <div class="col-lg-9">
+        <div class="loading-spinner" ng-if="loading">
+          <div class="spinner-border"></div>
+        </div>
+
+        <div class="empty-state" ng-if="!loading && properties.length === 0">
+          <i class="fas fa-search"></i>
+          <h5>No Properties Found</h5>
+          <p>Try adjusting your filters or search keyword</p>
+          <button class="btn btn-outline-secondary mt-2" ng-click="clearFilters()">Clear Filters</button>
+        </div>
+
+        <div class="row g-4" ng-if="!loading && properties.length > 0">
+          <div class="col-md-6 col-xl-4" ng-repeat="prop in properties">
+            <div class="property-card">
+              <div class="property-img-wrap">
+                <img ng-src="{{prop.images && prop.images.length ? prop.images[0] : 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800'}}" alt="{{prop.title}}" loading="lazy">
+                <span class="property-badge">{{prop.bhkType}}</span>
+                <span class="featured-badge" ng-if="prop.isFeatured"><i class="fas fa-star me-1"></i>Featured</span>
+              </div>
+              <div class="property-body">
+                <div class="property-price">₹{{prop.rent | number}}<span>/month</span></div>
+                <div class="property-title">{{prop.title}}</div>
+                <div class="property-location"><i class="fas fa-map-marker-alt"></i>{{prop.location}}</div>
+                <div class="property-chips">
+                  <span class="chip">{{prop.furnished}}</span>
+                  <span class="chip" ng-if="prop.area">{{prop.area}} sq.ft</span>
+                  <span class="chip">₹{{prop.deposit | number}} deposit</span>
+                </div>
+                <div class="property-footer">
+                  <div class="rating-badge"><i class="fas fa-star"></i> {{prop.rating || '4.0'}} ({{prop.reviewCount || 0}})</div>
+                  <a class="btn-view" href="#!/property/{{prop._id}}">View Details</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

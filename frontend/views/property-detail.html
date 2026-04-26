@@ -1,0 +1,204 @@
+<div style="padding: 2rem 0 4rem;" ng-if="!loading">
+  <div class="container">
+    <!-- Breadcrumb -->
+    <nav style="margin-bottom:1.5rem;">
+      <a href="#!/" style="color:#FF6B35; text-decoration:none;">Home</a>
+      <span style="color:#aaa; margin:0 8px;">/</span>
+      <a href="#!/properties" style="color:#FF6B35; text-decoration:none;">Properties</a>
+      <span style="color:#aaa; margin:0 8px;">/</span>
+      <span style="color:#666;">{{property.title}}</span>
+    </nav>
+
+    <div class="row g-4">
+      <!-- LEFT COLUMN -->
+      <div class="col-lg-8">
+        <!-- GALLERY -->
+        <div class="detail-gallery" ng-if="property.images && property.images.length">
+          <div class="gallery-main">
+            <img ng-src="{{activeImg}}" alt="{{property.title}}">
+          </div>
+          <div class="gallery-side" ng-if="property.images.length > 1">
+            <img ng-repeat="img in property.images | limitTo:2" ng-src="{{img}}" ng-click="setImg(img)" alt="property image">
+          </div>
+        </div>
+        <div ng-if="!property.images || !property.images.length" style="height:350px; background:#f0f0f0; border-radius:16px; display:flex; align-items:center; justify-content:center; margin-bottom:2rem;">
+          <i class="fas fa-image" style="font-size:4rem; color:#ddd;"></i>
+        </div>
+
+        <!-- PROPERTY HEADER -->
+        <div class="detail-card">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+            <div>
+              <h2 style="font-family:'Poppins',sans-serif; font-weight:700; color:#1a2e4a; font-size:1.6rem;">{{property.title}}</h2>
+              <p style="color:#6c757d;"><i class="fas fa-map-marker-alt me-1" style="color:#FF6B35;"></i>{{property.location}}</p>
+            </div>
+            <div class="text-end">
+              <div class="property-price" style="font-size:1.8rem;">₹{{property.rent | number}}</div>
+              <small style="color:#6c757d;">per month</small>
+            </div>
+          </div>
+          <hr style="margin:1rem 0;">
+          <div class="info-grid">
+            <div class="info-item"><label>BHK Type</label><span>{{property.bhkType}}</span></div>
+            <div class="info-item"><label>Furnishing</label><span>{{property.furnished}}</span></div>
+            <div class="info-item"><label>Area</label><span>{{property.area || 'N/A'}} sq.ft</span></div>
+            <div class="info-item"><label>Deposit</label><span>₹{{property.deposit | number}}</span></div>
+            <div class="info-item"><label>Available From</label><span>{{property.availableFrom | date:'mediumDate'}}</span></div>
+            <div class="info-item"><label>Views</label><span>{{property.views || 0}}</span></div>
+          </div>
+        </div>
+
+        <!-- DESCRIPTION -->
+        <div class="detail-card">
+          <h4><i class="fas fa-align-left me-2" style="color:#FF6B35;"></i>About This Property</h4>
+          <p style="color:#555; line-height:1.8; font-size:0.95rem;">{{property.description}}</p>
+        </div>
+
+        <!-- AMENITIES -->
+        <div class="detail-card" ng-if="property.amenities && property.amenities.length">
+          <h4><i class="fas fa-check-circle me-2" style="color:#FF6B35;"></i>Amenities</h4>
+          <div>
+            <span class="amenity-chip" ng-repeat="a in property.amenities">
+              <i class="fas fa-check"></i> {{a}}
+            </span>
+          </div>
+        </div>
+
+        <!-- OWNER INFO -->
+        <div class="detail-card" ng-if="property.owner">
+          <h4><i class="fas fa-user me-2" style="color:#FF6B35;"></i>Owner Details</h4>
+          <div class="d-flex align-items-center gap-3">
+            <div style="width:52px; height:52px; border-radius:50%; background:#FF6B35; display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:1.2rem; flex-shrink:0;">
+              {{property.owner.name[0]}}
+            </div>
+            <div>
+              <div style="font-weight:600; color:#1a2e4a;">{{property.owner.name}}</div>
+              <div style="font-size:0.85rem; color:#6c757d;"><i class="fas fa-envelope me-1"></i>{{property.owner.email}}</div>
+              <div style="font-size:0.85rem; color:#6c757d;" ng-if="property.owner.phone"><i class="fas fa-phone me-1"></i>{{property.owner.phone}}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- REVIEWS -->
+        <div class="detail-card">
+          <h4><i class="fas fa-star me-2" style="color:#FF6B35;"></i>Reviews & Ratings
+            <span style="font-size:0.85rem; color:#6c757d; font-weight:400; margin-left:8px;">({{reviews.length}} reviews)</span>
+          </h4>
+
+          <div class="review-card" ng-repeat="r in reviews">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="reviewer">{{r.user.name}}</div>
+              <div class="review-date">{{r.createdAt | date:'mediumDate'}}</div>
+            </div>
+            <div class="stars">
+              <i class="fas fa-star" ng-repeat="s in starsArray(r.rating) track by $index"></i>
+            </div>
+            <div class="review-text">{{r.comment}}</div>
+          </div>
+
+          <div class="empty-state" ng-if="reviews.length === 0" style="padding:2rem 0;">
+            <i class="fas fa-star" style="font-size:2rem;"></i>
+            <p style="margin:0;">No reviews yet. Be the first to review!</p>
+          </div>
+
+          <!-- Add Review -->
+          <div style="margin-top:1.5rem; padding-top:1.5rem; border-top:1px solid #f0f0f0;" ng-if="!reviewSuccess">
+            <h6 style="font-weight:700; color:#1a2e4a; margin-bottom:1rem;">Add Your Review</h6>
+            <div class="alert-banner alert-error" ng-if="reviewError">{{reviewError}}</div>
+            <div class="mb-2">
+              <label style="font-size:0.85rem; font-weight:600; color:#1a2e4a;">Rating</label>
+              <select class="form-select mt-1" ng-model="review.rating">
+                <option value="5">★★★★★ Excellent</option>
+                <option value="4">★★★★ Good</option>
+                <option value="3">★★★ Average</option>
+                <option value="2">★★ Poor</option>
+                <option value="1">★ Terrible</option>
+              </select>
+            </div>
+            <div class="mb-2">
+              <label style="font-size:0.85rem; font-weight:600; color:#1a2e4a;">Comment</label>
+              <textarea class="form-control mt-1" rows="3" ng-model="review.comment" placeholder="Share your experience..."></textarea>
+            </div>
+            <button class="btn-view" ng-click="submitReview()" style="padding:8px 24px;">Submit Review</button>
+          </div>
+          <div class="alert-banner alert-success" ng-if="reviewSuccess">✓ Thank you for your review!</div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN - BOOKING + CALCULATOR -->
+      <div class="col-lg-4">
+        <!-- BOOKING CARD -->
+        <div class="booking-card">
+          <div class="d-flex align-items-baseline gap-2 mb-1">
+            <div class="price-tag">₹{{property.rent | number}}</div>
+            <small>/month</small>
+          </div>
+          <p style="font-size:0.82rem; color:#6c757d; margin-bottom:1.5rem;">
+            <i class="fas fa-shield-alt me-1" style="color:#27ae60;"></i> Deposit: ₹{{property.deposit | number}}
+          </p>
+
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <span class="chip"><i class="fas fa-star me-1" style="color:#FFD700;"></i>{{property.rating || '4.0'}}</span>
+            <span class="chip"><i class="fas fa-eye me-1"></i>{{property.views || 0}} views</span>
+          </div>
+
+          <hr>
+
+          <div class="alert-banner alert-success mb-3" ng-if="bookingSuccess">
+            <i class="fas fa-check-circle me-1"></i> Inquiry sent! Owner will contact you soon.
+          </div>
+          <div class="alert-banner alert-error mb-3" ng-if="bookingError">{{bookingError}}</div>
+
+          <div ng-if="!bookingSuccess">
+            <h6 style="font-weight:700; color:#1a2e4a; margin-bottom:1rem;"><i class="fas fa-paper-plane me-2" style="color:#FF6B35;"></i>Send Rental Inquiry</h6>
+            <div class="mb-2">
+              <input class="form-control" type="date" ng-model="booking.visitDate" placeholder="Preferred Visit Date">
+            </div>
+            <div class="mb-2">
+              <input class="form-control" type="tel" ng-model="booking.phone" placeholder="Your Phone Number">
+            </div>
+            <div class="mb-3">
+              <textarea class="form-control" rows="3" ng-model="booking.message" placeholder="Message to owner..."></textarea>
+            </div>
+            <button class="btn-primary-custom" ng-click="submitBooking()">
+              <i class="fas fa-paper-plane me-2"></i> Send Inquiry
+            </button>
+          </div>
+
+          <button class="btn-clear-filter mt-2" ng-click="toggleFavorite()">
+            <i class="fas fa-heart me-2" ng-class="{'text-danger': isFavorite}"></i>
+            {{isFavorite ? 'Remove from Saved' : 'Save Property'}}
+          </button>
+        </div>
+
+        <!-- RENT CALCULATOR -->
+        <div class="rent-calc">
+          <h5><i class="fas fa-calculator me-2"></i>Rent Calculator</h5>
+          <div class="mb-3">
+            <label style="font-size:0.85rem;">Number of Months</label>
+            <input class="form-control mt-1" type="number" ng-model="calcMonths" min="1" max="60" value="12">
+          </div>
+          <div style="background:rgba(255,255,255,0.1); border-radius:8px; padding:1rem;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+              <span style="font-size:0.85rem; opacity:0.85;">Rent ({{calcMonths}} months)</span>
+              <span style="font-size:0.85rem; font-weight:600;">₹{{(property.rent * calcMonths) | number}}</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+              <span style="font-size:0.85rem; opacity:0.85;">Security Deposit</span>
+              <span style="font-size:0.85rem; font-weight:600;">₹{{property.deposit | number}}</span>
+            </div>
+            <hr style="border-color:rgba(255,255,255,0.2); margin:0.5rem 0;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-weight:600;">Total Estimated</span>
+              <div class="result-amount">₹{{calcTotal() | number}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="loading-spinner" ng-if="loading">
+  <div class="spinner-border"></div>
+</div>

@@ -1,0 +1,83 @@
+<div class="contact-header">
+  <div class="container text-center">
+    <h1><i class="fas fa-envelope me-2"></i>Contact Us</h1>
+    <p style="opacity:0.8; margin:0.5rem 0 0;">We're here to help. Reach us anytime.</p>
+  </div>
+</div>
+
+<div class="container" style="padding-bottom:5rem;">
+  <!-- Info Cards -->
+  <div class="row g-4 mb-5">
+    <div class="col-md-4">
+      <div class="contact-card">
+        <div class="icon"><i class="fas fa-phone"></i></div>
+        <h6>Call Us</h6>
+        <p>+91 800 100 9999<br>Mon–Sat, 9am–7pm</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="contact-card">
+        <div class="icon"><i class="fas fa-envelope"></i></div>
+        <h6>Email Us</h6>
+        <p>support@rentease.in<br>We reply within 24 hours</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="contact-card">
+        <div class="icon"><i class="fas fa-map-marker-alt"></i></div>
+        <h6>Head Office</h6>
+        <p>SG Highway, Ahmedabad<br>Gujarat – 380054, India</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact Form -->
+  <div class="row justify-content-center">
+    <div class="col-lg-7">
+      <div class="detail-card">
+        <h4><i class="fas fa-paper-plane me-2" style="color:#FF6B35;"></i>Send Us a Message</h4>
+
+        <div class="alert-banner alert-success" ng-if="sent">
+          <i class="fas fa-check-circle me-2"></i>Thank you! Your message has been sent. We'll reply soon.
+        </div>
+
+        <div ng-if="!sent">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Full Name</label>
+              <input class="form-control" ng-model="form.name" placeholder="Your name">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Email Address</label>
+              <input class="form-control" type="email" ng-model="form.email" placeholder="your@email.com">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Phone</label>
+              <input class="form-control" type="tel" ng-model="form.phone" placeholder="Your contact number">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Subject</label>
+              <select class="form-select" ng-model="form.subject">
+                <option value="">Select subject</option>
+                <option>General Inquiry</option>
+                <option>Report a Problem</option>
+                <option>List My Property</option>
+                <option>Partnership</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Message</label>
+              <textarea class="form-control" rows="5" ng-model="form.message" placeholder="Write your message here..."></textarea>
+            </div>
+            <div class="col-12">
+              <button class="btn-primary-custom" ng-click="submit()">
+                <i class="fas fa-paper-plane me-2"></i>Send Message
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

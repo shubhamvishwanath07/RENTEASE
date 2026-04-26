@@ -1,0 +1,40 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo"><i class="fas fa-home-alt"></i>Rent<span>Ease</span></div>
+    <h5 style="text-align:center; font-weight:700; color:#1a2e4a; margin-bottom:0.25rem;">Welcome Back</h5>
+    <p style="text-align:center; color:#6c757d; font-size:0.88rem; margin-bottom:1.5rem;">Sign in to your account</p>
+
+    <div class="alert-banner alert-error" ng-if="error">{{error}}</div>
+
+    <div class="mb-3">
+      <label class="form-label">Email Address</label>
+      <div class="input-group">
+        <span class="input-group-text" style="border:1.5px solid #e9ecef; border-right:none; background:#f8f9fc;"><i class="fas fa-envelope" style="color:#FF6B35;"></i></span>
+        <input class="form-control" type="email" ng-model="form.email" placeholder="you@example.com" style="border-left:none;" ng-keyup="$event.keyCode==13 && submit()">
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Password</label>
+      <div class="input-group">
+        <span class="input-group-text" style="border:1.5px solid #e9ecef; border-right:none; background:#f8f9fc;"><i class="fas fa-lock" style="color:#FF6B35;"></i></span>
+        <input class="form-control" type="password" ng-model="form.password" placeholder="Your password" style="border-left:none;" ng-keyup="$event.keyCode==13 && submit()">
+      </div>
+    </div>
+
+    <div style="background:#fff8f5; border:1px solid #ffe0d0; border-radius:8px; padding:0.75rem 1rem; margin-bottom:1rem; font-size:0.8rem;">
+      <strong style="color:#FF6B35;">Demo Credentials:</strong><br>
+      Admin: admin@rentease.com | Owner: rajesh@rentease.com | Tenant: amit@rentease.com<br>
+      <strong>Password: password123</strong>
+    </div>
+
+    <button class="btn-primary-custom" ng-click="submit()" ng-disabled="loading">
+      <span ng-if="!loading"><i class="fas fa-sign-in-alt me-2"></i>Sign In</span>
+      <span ng-if="loading"><i class="fas fa-spinner fa-spin me-2"></i>Signing in...</span>
+    </button>
+
+    <p style="text-align:center; margin-top:1.25rem; font-size:0.88rem; color:#6c757d;">
+      Don't have an account? <a href="#!/register" style="color:#FF6B35; font-weight:600;">Sign Up</a>
+    </p>
+  </div>
+</div>

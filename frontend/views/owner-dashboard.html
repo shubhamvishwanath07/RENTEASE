@@ -1,0 +1,213 @@
+<!-- Dashboard Header -->
+<div class="dashboard-header">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div>
+        <h2><i class="fas fa-tachometer-alt me-2"></i>Owner Dashboard</h2>
+        <p style="opacity:0.75; margin:0;">Manage your property listings and tenant inquiries</p>
+      </div>
+      <button class="btn-accent" ng-click="openAddForm()"><i class="fas fa-plus me-2"></i>Add New Listing</button>
+    </div>
+  </div>
+</div>
+
+<div class="container dashboard-page">
+  <!-- Stats -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="stat-card coral">
+        <div class="stat-icon"><i class="fas fa-building"></i></div>
+        <div><div class="stat-value">{{listings.length}}</div><div class="stat-label">Total Listings</div></div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-card green">
+        <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+        <div><div class="stat-value">{{(listings | filter:{isApproved:true}).length}}</div><div class="stat-label">Approved</div></div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-card blue">
+        <div class="stat-icon"><i class="fas fa-clock"></i></div>
+        <div><div class="stat-value">{{(listings | filter:{isApproved:false}).length}}</div><div class="stat-label">Pending Approval</div></div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-card gold">
+        <div class="stat-icon"><i class="fas fa-envelope"></i></div>
+        <div><div class="stat-value">{{inquiries.length}}</div><div class="stat-label">Inquiries</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <ul class="nav nav-tabs mb-4" style="border-bottom:2px solid #e9ecef;">
+    <li class="nav-item">
+      <a class="nav-link" ng-class="{active: activeTab==='listings'}" ng-click="setTab('listings')" href="#" style="font-weight:600; color:#1a2e4a;">
+        <i class="fas fa-building me-2"></i>My Listings
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" ng-class="{active: activeTab==='inquiries'}" ng-click="setTab('inquiries')" href="#" style="font-weight:600; color:#1a2e4a;">
+        <i class="fas fa-envelope me-2"></i>Inquiries
+        <span class="badge bg-danger ms-1" ng-if="(inquiries | filter:{status:'pending'}).length > 0">{{(inquiries | filter:{status:'pending'}).length}}</span>
+      </a>
+    </li>
+  </ul>
+
+  <!-- LISTINGS TAB -->
+  <div ng-if="activeTab==='listings'">
+    <div class="loading-spinner" ng-if="loading"><div class="spinner-border"></div></div>
+
+    <div class="empty-state" ng-if="!loading && listings.length === 0">
+      <i class="fas fa-plus-circle"></i>
+      <h5>No Listings Yet</h5>
+      <p>Add your first property to get started</p>
+      <button class="btn-accent mt-2" ng-click="openAddForm()">Add Property</button>
+    </div>
+
+    <div class="data-table" ng-if="!loading && listings.length > 0">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Property</th><th>Location</th><th>Rent</th><th>BHK</th><th>Status</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="p in listings">
+            <td style="max-width:200px;">
+              <div style="font-weight:600; font-size:0.9rem; color:#1a2e4a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{p.title}}</div>
+            </td>
+            <td style="color:#6c757d;">{{p.city}}</td>
+            <td style="font-weight:600; color:#FF6B35;">₹{{p.rent | number}}</td>
+            <td><span class="chip">{{p.bhkType}}</span></td>
+            <td>
+              <span class="status-badge" ng-class="p.isApproved ? 'status-approved' : 'status-pending'">
+                {{p.isApproved ? 'Approved' : 'Pending'}}
+              </span>
+            </td>
+            <td>
+              <button class="btn btn-sm btn-outline-primary me-1" ng-click="openEditForm(p)" style="border-radius:6px;">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-danger" ng-click="deleteListing(p._id)" style="border-radius:6px;">
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- INQUIRIES TAB -->
+  <div ng-if="activeTab==='inquiries'">
+    <div class="empty-state" ng-if="inquiries.length === 0">
+      <i class="fas fa-inbox"></i><h5>No Inquiries Yet</h5><p>Tenants will send inquiries for your properties here</p>
+    </div>
+    <div class="data-table" ng-if="inquiries.length > 0">
+      <table class="table">
+        <thead>
+          <tr><th>Tenant</th><th>Property</th><th>Visit Date</th><th>Message</th><th>Status</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="b in inquiries">
+            <td>
+              <div style="font-weight:600; font-size:0.88rem;">{{b.user.name}}</div>
+              <div style="font-size:0.78rem; color:#6c757d;">{{b.user.phone}}</div>
+            </td>
+            <td style="font-size:0.85rem; color:#1a2e4a; font-weight:500;">{{b.property.title}}</td>
+            <td style="font-size:0.85rem;">{{b.visitDate | date:'mediumDate'}}</td>
+            <td style="font-size:0.82rem; color:#6c757d; max-width:160px;">{{b.message | limitTo:60}}...</td>
+            <td><span class="status-badge status-{{b.status}}">{{b.status | uppercase}}</span></td>
+            <td ng-if="b.status==='pending'">
+              <button class="btn btn-sm btn-success me-1" ng-click="updateInquiry(b, 'confirmed')" style="border-radius:6px; font-size:0.78rem;">Confirm</button>
+              <button class="btn btn-sm btn-danger" ng-click="updateInquiry(b, 'rejected')" style="border-radius:6px; font-size:0.78rem;">Reject</button>
+            </td>
+            <td ng-if="b.status!=='pending'"><span style="font-size:0.78rem; color:#6c757d;">Done</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ADD/EDIT PROPERTY MODAL -->
+<div ng-if="showForm" style="position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); z-index:1050; display:flex; align-items:center; justify-content:center; overflow-y:auto; padding:1rem;">
+  <div style="background:white; border-radius:16px; padding:2rem; width:100%; max-width:650px; max-height:90vh; overflow-y:auto; position:relative; margin:auto;">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 style="font-family:'Poppins',sans-serif; font-weight:700; color:#1a2e4a; margin:0;">
+        <i class="fas fa-building me-2" style="color:#FF6B35;"></i>{{editMode ? 'Edit Listing' : 'Add New Listing'}}
+      </h5>
+      <button class="btn-close" ng-click="closeForm()"></button>
+    </div>
+    <div class="alert-banner alert-error" ng-if="formError">{{formError}}</div>
+    <div class="row g-3">
+      <div class="col-12">
+        <label class="form-label">Property Title *</label>
+        <input class="form-control" ng-model="form.title" placeholder="e.g. Modern 2BHK in Satellite">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">City *</label>
+        <select class="form-select" ng-model="form.city">
+          <option value="">Select City</option>
+          <option>Mumbai</option><option>Bangalore</option><option>Gurgaon</option>
+          <option>Ahmedabad</option><option>Delhi</option><option>Pune</option><option>Hyderabad</option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Location/Area *</label>
+        <input class="form-control" ng-model="form.location" placeholder="e.g. Satellite, Ahmedabad">
+      </div>
+      <div class="col-12">
+        <label class="form-label">Full Address *</label>
+        <input class="form-control" ng-model="form.address" placeholder="Building name, street, area">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Monthly Rent (₹) *</label>
+        <input class="form-control" type="number" ng-model="form.rent" placeholder="e.g. 25000">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Security Deposit (₹)</label>
+        <input class="form-control" type="number" ng-model="form.deposit" placeholder="e.g. 75000">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Area (sq.ft)</label>
+        <input class="form-control" type="number" ng-model="form.area" placeholder="e.g. 950">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">BHK Type *</label>
+        <select class="form-select" ng-model="form.bhkType">
+          <option value="">Select Type</option>
+          <option>Studio</option><option>1BHK</option><option>2BHK</option><option>3BHK</option><option>4BHK</option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Furnishing *</label>
+        <select class="form-select" ng-model="form.furnished">
+          <option value="">Select</option>
+          <option>Furnished</option><option>Semi-Furnished</option><option>Unfurnished</option>
+        </select>
+      </div>
+      <div class="col-12">
+        <label class="form-label">Description *</label>
+        <textarea class="form-control" rows="3" ng-model="form.description" placeholder="Describe the property, surroundings, transport links..."></textarea>
+      </div>
+      <div class="col-12">
+        <label class="form-label">Amenities <small style="color:#6c757d;">(comma separated)</small></label>
+        <input class="form-control" ng-model="form.amenities" placeholder="WiFi, Parking, Gym, Security, AC...">
+      </div>
+      <div class="col-12">
+        <label class="form-label">Property Images</label>
+        <input class="form-control" type="file" id="propertyImages" multiple accept="image/*">
+        <small style="color:#6c757d;">Upload up to 10 images (JPG, PNG)</small>
+      </div>
+    </div>
+    <div class="d-flex gap-2 mt-4">
+      <button class="btn-primary-custom" ng-click="submitForm()" style="flex:1;">
+        <i class="fas fa-save me-2"></i>{{editMode ? 'Update Listing' : 'Submit for Approval'}}
+      </button>
+      <button class="btn-clear-filter" ng-click="closeForm()" style="flex:1; margin:0;">Cancel</button>
+    </div>
+  </div>
+</div>

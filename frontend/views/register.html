@@ -1,0 +1,58 @@
+<div class="auth-page">
+  <div class="auth-card" style="max-width:500px;">
+    <div class="auth-logo"><i class="fas fa-home-alt"></i>Rent<span>Ease</span></div>
+    <h5 style="text-align:center; font-weight:700; color:#1a2e4a; margin-bottom:0.25rem;">Create Account</h5>
+    <p style="text-align:center; color:#6c757d; font-size:0.88rem; margin-bottom:1.5rem;">Join thousands of users on RentEase</p>
+
+    <div class="alert-banner alert-error" ng-if="error">{{error}}</div>
+
+    <!-- Role Selection -->
+    <div style="margin-bottom:1.25rem;">
+      <label class="form-label">I am a</label>
+      <div class="role-select-group">
+        <div class="role-option" ng-class="{active: form.role==='tenant'}" ng-click="setRole('tenant')">
+          <i class="fas fa-user"></i><span>Tenant</span>
+        </div>
+        <div class="role-option" ng-class="{active: form.role==='owner'}" ng-click="setRole('owner')">
+          <i class="fas fa-building"></i><span>Owner</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-2 mb-3">
+      <div class="col-12">
+        <label class="form-label">Full Name</label>
+        <input class="form-control" type="text" ng-model="form.name" placeholder="Your full name">
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Email Address</label>
+      <input class="form-control" type="email" ng-model="form.email" placeholder="you@example.com">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Phone Number</label>
+      <input class="form-control" type="tel" ng-model="form.phone" placeholder="10-digit mobile number">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Password</label>
+      <input class="form-control" type="password" ng-model="form.password" placeholder="Min 6 characters">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Confirm Password</label>
+      <input class="form-control" type="password" ng-model="form.confirmPassword" placeholder="Repeat password">
+    </div>
+
+    <button class="btn-primary-custom" ng-click="submit()" ng-disabled="loading">
+      <span ng-if="!loading"><i class="fas fa-user-plus me-2"></i>Create Account</span>
+      <span ng-if="loading"><i class="fas fa-spinner fa-spin me-2"></i>Creating...</span>
+    </button>
+
+    <p style="text-align:center; margin-top:1.25rem; font-size:0.88rem; color:#6c757d;">
+      Already have an account? <a href="#!/login" style="color:#FF6B35; font-weight:600;">Sign In</a>
+    </p>
+  </div>
+</div>
