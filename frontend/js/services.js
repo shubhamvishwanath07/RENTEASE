@@ -1,4 +1,5 @@
-const API = 'http://localhost:5000/api';
+// API Base URL - Points to the Render backend
+const API = (window.RENTEASE_API_URL || 'RENDER_BACKEND_URL') + '/api';
 
 angular.module('RentEase')
 
