@@ -1,5 +1,4 @@
-// API Base URL - Points to the Render backend
-const API = (window.RENTEASE_API_URL || 'RENDER_BACKEND_URL') + '/api';
+const API = 'https://rentease-backend-9gj6.onrender.com/api';
 
 angular.module('RentEase')
 
