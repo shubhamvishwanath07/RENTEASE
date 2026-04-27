@@ -37,14 +37,12 @@ angular.module('RentEase', ['ngRoute'])
   });
 }]);
 
-// Global toast helper
 function showToast(msg, type) {
-  const el = document.getElementById('liveToast');
-  const msgEl = document.getElementById('toastMsg');
+  var el = document.getElementById('liveToast');
+  var msgEl = document.getElementById('toastMsg');
   if (!el || !msgEl) return;
   msgEl.textContent = msg;
   el.className = 'toast align-items-center text-white border-0 ' + (type === 'success' ? 'bg-success' : type === 'error' ? 'bg-danger' : 'bg-primary');
-  const toast = new bootstrap.Toast(el, { delay: 3000 });
+  var toast = new bootstrap.Toast(el, { delay: 3000 });
   toast.show();
 }
-
