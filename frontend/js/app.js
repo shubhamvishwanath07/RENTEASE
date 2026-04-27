@@ -47,3 +47,4 @@ function showToast(msg, type) {
   const toast = new bootstrap.Toast(el, { delay: 3000 });
   toast.show();
 }
+
